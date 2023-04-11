@@ -9,9 +9,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController controller = TextEditingController();
+  TextEditingController langController = TextEditingController();
   String _currentLanguage = 'en';
   String _requiredLanguage = 'en';
   List<String> _languages = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -21,6 +24,13 @@ class _HomePageState extends State<HomePage> {
 
   loadData() async {
     _languages = await Api().fetchLanguages();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    langController.dispose();
   }
 
   @override
@@ -84,18 +94,19 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Current Language: English',
+              Text(
+                'Current Language: $_currentLanguage',
                 textAlign: TextAlign.left,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: langController,
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Enter text to translate',
                   ),
@@ -103,19 +114,62 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Required Language: Hindi',
+              GestureDetector(
+                onTap: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  final value = await Api().translateText(
+                    langController.text,
+                    _currentLanguage,
+                    _requiredLanguage,
+                  );
+
+                  setState(() {
+                    if (value != "(())") {
+                      controller.text = value;
+                    } else {
+                      controller.text = "API Error Occurred";
+                    }
+                    isLoading = false;
+                  });
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: MediaQuery.of(context).size.width * 0.15,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    color: Colors.grey,
+                    child: Center(
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
+                              'Translate',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Required Language: $_requiredLanguage',
                 textAlign: TextAlign.left,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
+                  controller: controller,
                   enabled: false,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Translated text',
                   ),
