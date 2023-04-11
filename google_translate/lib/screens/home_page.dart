@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_translate/services/api.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +22,18 @@ class _HomePageState extends State<HomePage> {
     'Arabic',
     'Russian',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  loadData() async {
+    _languages = await Api().fetchLanguages();
+    print(_languages);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
