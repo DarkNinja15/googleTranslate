@@ -62,6 +62,14 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 20),
+              const Text(
+                'Current Language: English',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
@@ -70,6 +78,14 @@ class _HomePageState extends State<HomePage> {
                     labelText: 'Enter text to translate',
                   ),
                   maxLines: 4,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Required Language: Hindi',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
