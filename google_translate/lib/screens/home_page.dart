@@ -8,6 +8,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String _currentLanguage = 'English';
+  String _requiredLanguage = 'English';
+  List<String> _languages = [
+    'English',
+    'Spanish',
+    'French',
+    'German',
+    'Chinese',
+    'Japanese',
+    'Korean',
+    'Arabic',
+    'Russian',
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,17 +34,20 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  _showLanguageModal(context, true);
+                  setState(() {});
+                },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
                     height: MediaQuery.of(context).size.width * 0.15,
                     width: MediaQuery.of(context).size.width * 0.5,
                     color: Colors.grey,
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Current Language',
-                        style: TextStyle(
+                        _currentLanguage,
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -43,17 +59,21 @@ class _HomePageState extends State<HomePage> {
               const Icon(Icons.compare_arrows_sharp),
               const SizedBox(height: 10),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  setState(() {
+                    _showLanguageModal(context, false);
+                  });
+                },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
                     height: MediaQuery.of(context).size.width * 0.15,
                     width: MediaQuery.of(context).size.width * 0.5,
                     color: Colors.grey,
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Required Language',
-                        style: TextStyle(
+                        _requiredLanguage,
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -104,6 +124,61 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showLanguageModal(BuildContext context, bool isCurrentLanguage) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Search language',
+                  ),
+                  onChanged: (value) {
+                    // Code to filter the list of languages based on the search query
+                    setState(() {
+                      _languages = _languages
+                          .where((language) => language
+                              .toLowerCase()
+                              .startsWith(value.toLowerCase()))
+                          .toList();
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _languages.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(_languages[index]),
+                        onTap: () {
+                          setState(() {
+                            if (isCurrentLanguage) {
+                              _currentLanguage = _languages[index];
+                            } else {
+                              _requiredLanguage = _languages[index];
+                            }
+                          });
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      },
     );
   }
 }
