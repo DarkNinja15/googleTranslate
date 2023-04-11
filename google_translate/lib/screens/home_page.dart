@@ -9,19 +9,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _currentLanguage = 'English';
-  String _requiredLanguage = 'English';
-  List<String> _languages = [
-    'English',
-    'Spanish',
-    'French',
-    'German',
-    'Chinese',
-    'Japanese',
-    'Korean',
-    'Arabic',
-    'Russian',
-  ];
+  String _currentLanguage = 'en';
+  String _requiredLanguage = 'en';
+  List<String> _languages = [];
 
   @override
   void initState() {
@@ -31,7 +21,6 @@ class _HomePageState extends State<HomePage> {
 
   loadData() async {
     _languages = await Api().fetchLanguages();
-    print(_languages);
   }
 
   @override
